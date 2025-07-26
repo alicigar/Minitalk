@@ -19,10 +19,13 @@ static void	handle_signal(int sig)
 
 	if (sig == SIGUSR1)
 		c = c | (1 << (7 - bit_count));
-	bit_count = bit_count + 1;
+	bit_count++;
 	if (bit_count == 8)
 	{
-		write(1, &c, 1);
+		if(c == '\0')
+			write(1, "\n", 1);
+		else
+			write(1, &c, 1);
 		c = 0;
 		bit_count = 0;
 	}
@@ -30,15 +33,12 @@ static void	handle_signal(int sig)
 
 int	main(void)
 {
-	write(1, "This is alicigar's Minitalk :)\n", 30);
-	write(1, "\n", 1);
-	write(1, "Your PID is: ", 13);
+	write(1, "This is alicigar's Minitalk :)\n", 31);
+	write(1, "\nYour PID is: ", 14);
 	ft_putnbr(getpid());
 	write(1, "\n", 1);
-
 	signal(SIGUSR1, handle_signal);
 	signal(SIGUSR2, handle_signal);
-
 	while (1)
 		pause();
 	return (0);
