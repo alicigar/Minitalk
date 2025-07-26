@@ -12,49 +12,40 @@
 
 #include "minitalk.h"
 
+static void	send_bit(int pid, int bit)
+{
+	if (bit)
+		kill(pid, SIGUSR1);
+	else
+		kill(pid, SIGUSR2);
+	usleep(500);
+}
+
+static void	send_char(int pid, unsigned char c)
+{
+	int	bit;
+
+	bit = 7;
+	while (bit >= 0)
+	{
+		send_bit(pid, (c >> bit) & 1);
+		bit--;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	int	pid;
 	int	i;
-	unsigned char	c;
 
 	if (argc != 3)
-	{
-		write(2, "Error: invalid input\n", 20);
-		return (1);
-	}
-	
+		return (write(2, "Error: ./client [PID] [message]\n", 31), 1);
 	pid = ft_atoi(argv[1]);
 	if (pid <= 0)
-	{
-		write(2, "Error: Invalid PID\n", 18);
-		return (1);
-	}
-
+		return (write(2, "Error: Invalid PID\n", 19), 1);
 	i = 0;
 	while (argv[2][i])
-	{
-		c = argv[2][i];
-		int bit = 8;
-		while (bit--)
-		{
-			if ((c >> bit) & 1)
-				kill(pid, SIGUSR1);
-			else
-				kill(pid, SIGUSR2);
-			usleep(100);
-		}
-		i++;
-	}
-	c = '\0';
-	int bit = 8;
-	while (bit--)
-	{
-		if ((c >> bit) & 1)
-			kill(pid, SIGUSR1);
-		else
-			kill(pid, SIGUSR2);
-		usleep(100);
-	}
+		send_char(pid, argv[2][i++]);
+	send_char(pid, '\0');
 	return (0);
 }
