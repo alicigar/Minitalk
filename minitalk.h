@@ -17,26 +17,7 @@
 #include <signal.h>
 #include <string.h>
 
-int	ft_atoi(const char *str)
-{
-	int		r;
-
-	r = 0;
-	if (*str < 33)
-		str++;
-	while (*str >= '0' && *str <= '9')
-	{
-		r = r * 10 + (*str - '0');
-		str++;
-	}
-	return (r);
-}
-
-void ft_putnbr(int n)
-{
-    if (n > 9)
-        ft_putnbr(n / 10);
-    write(1, &"0123456789"[n % 10], 1);
-}
+int	ft_atoi(const char *str);
+void 	ft_putnbr(int n);
 
 #endif
